@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistem Arsip Dokumen - BRMP Sulawesi Barat</title>
+
+  <!-- QRCode.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #146c43;
+      --primary-soft: #e3f2ed;
+      --border: #d0d7de;
+      --bg: #f6f8fa;
+      --text-main: #24292f;
+      --text-muted: #57606a;
+      --danger: #b3261e;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text-main);
+    }
+
+    /* LOGIN */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 12px;
+      background: var(--bg);
+    }
+
+    .login-card {
+      background: #fff;
+      max-width: 380px;
+      width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+      padding: 24px 22px 20px;
+    }
+
+    .login-title {
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .login-title h2 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .login-title p {
+      margin: 4px 0 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .login-group {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .login-group label {
+      font-weight: 500;
+    }
+
+    .login-group input {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      outline: none;
+      font-size: 0.9rem;
+    }
+
+    .login-group input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(20, 108, 67, 0.18);
+    }
+
+    .btn-login {
+      margin-top: 12px;
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      padding: 9px 12px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .btn-login:active {
+      transform: scale(0.98);
+    }
+
+    .login-error {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: var(--danger);
+      min-height: 16px;
+    }
+
+    .login-hint {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* HALAMAN UTAMA */
+    .page-wrap {
+      min-height: 100vh;
+      display: none;
+      justify-content: center;
+      padding: 24px 12px;
+    }
+
+    .card {
+      background: #fff;
+      max-width: 1150px;
+      width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+      padding: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        padding: 32px;
+      }
+    }
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .logo-wrap {
+      width: 60px;
+      height: 60px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .header-text h1 {
+      font-size: 1.4rem;
+      margin: 0;
+    }
+
+    .header-text p {
+      margin: 4px 0 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #16a34a;
+    }
+
+    .user-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      font-size: 0.8rem;
+      color: var(--text-main);
+    }
+
+    .user-pill img {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      object-fit: cover;
+      border: 1px solid #e5e7eb;
+    }
+
+    .tabs {
+      margin-top: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-btn.active {
+      border-bottom-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .tab-icon {
+      font-size: 1rem;
+    }
+
+    .tab-content {
+      margin-top: 18px;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .search-section {
+      margin-bottom: 16px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .search-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .search-row input {
+      flex: 1 1 240px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .search-row input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(20, 108, 67, 0.18);
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 13px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      padding-inline: 6px;
+    }
+
+    .btn-small {
+      font-size: 0.78rem;
+      padding: 5px 8px;
+    }
+
+    .btn-danger {
+      border: 1px solid #fecaca;
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .status-alert {
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 0.88rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .status-alert.info {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .status-icon {
+      font-size: 1rem;
+      margin-top: 1px;
+    }
+
+    .table-wrap {
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+
+    thead {
+      background: #f3f4f6;
+    }
+
+    th, td {
+      padding: 7px 9px;
+      border-bottom: 1px solid #edf1f5;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    tbody tr:hover {
+      background: #f9fafb;
+    }
+
+    .link-doc a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .link-doc a:hover {
+      text-decoration: underline;
+    }
+
+    .small-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.88rem;
+    }
+
+    .form-group label {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      outline: none;
+      resize: vertical;
+      min-height: 36px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(20, 108, 67, 0.18);
+    }
+
+    .helper {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px 20px 16px;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .modal-header h2 {
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .modal-body {
+      display: grid;
+      gap: 8px;
+    }
+
+    #qrContainer {
+      width: 220px;
+      height: 220px;
+    }
+
+    .modal-footer {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-title">
+      <h2>Login Arsip Dokumen</h2>
+      <p>Masuk untuk mengakses sistem arsip BRMP Sulawesi Barat</p>
+    </div>
+
+    <div class="login-group">
+      <label for="loginUsername">Username</label>
+      <input id="loginUsername" type="text" placeholder="contoh: arsiparis" />
+    </div>
+    <div class="login-group">
+      <label for="loginPassword">Password</label>
+      <input id="loginPassword" type="password" placeholder="••••••" />
+    </div>
+
+    <button class="btn-login" type="button" id="btnLogin">Masuk</button>
+
+    <div id="loginError" class="login-error"></div>
+    <div class="login-hint">
+      Demo: <code>arsiparis</code> / <code>12345</code>
+    </div>
+  </div>
+</div>
+
+<!-- HALAMAN UTAMA -->
+<div id="main-app" class="page-wrap">
+  <div class="card">
+    <div class="header">
+      <div class="header-left">
+        <div class="logo-wrap">
+          <img id="logoImage" src="logo-kementan.png" alt="Logo Instansi" />
+        </div>
+        <div class="header-text">
+          <h1>Sistem Arsip Dokumen</h1>
+          <p>BRMP Sulawesi Barat – Surat Masuk · Surat Keluar · Keuangan · Kepegawaian</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="badge">
+          <span class="badge-dot"></span>
+          Arsip Digital & QR Verification
+        </div>
+        <div class="user-pill">
+          <img id="profilePhoto" src="https://via.placeholder.com/40?text=A" alt="Foto Profil" />
+          <span id="profileName">Arsiparis</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="masuk"><span class="tab-icon">📥</span>Surat Masuk</button>
+      <button class="tab-btn" data-tab="keluar"><span class="tab-icon">📤</span>Surat Keluar</button>
+      <button class="tab-btn" data-tab="keuangan"><span class="tab-icon">💰</span>Keuangan</button>
+      <button class="tab-btn" data-tab="kepegawaian"><span class="tab-icon">👥</span>Kepegawaian</button>
+      <button class="tab-btn" data-tab="tambah"><span class="tab-icon">➕</span>Tambah Data</button>
+      <button class="tab-btn" data-tab="akun"><span class="tab-icon">👤</span>Pengaturan Akun</button>
+    </div>
+
+    <!-- SURAT MASUK -->
+    <div id="tab-masuk" class="tab-content active">
+      <div class="search-section">
+        <div class="search-label">Cari berdasarkan <strong>nomor surat, pengirim, atau perihal/urgensi</strong>.</div>
+        <div class="search-row">
+          <input id="searchMasuk" type="text" placeholder="Cari surat masuk..." />
+          <button class="btn btn-outline" type="button" id="btnResetMasuk">↺ Reset</button>
+        </div>
+      </div>
+      <div class="status-alert info">
+        <div class="status-icon">ℹ</div>
+        <div><strong>Surat masuk</strong> yang telah dihubungkan dengan file digital.</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr>
+            <th>No</th>
+            <th>Nomor</th>
+            <th>Tanggal</th>
+            <th>Pengirim</th>
+            <th>Perihal/Urgensi</th>
+            <th>Dokumen</th>
+            <th>QR</th>
+            <th>Edit</th>
+          </tr>
+          </thead>
+          <tbody id="tbodyMasuk"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SURAT KELUAR -->
+    <div id="tab-keluar" class="tab-content">
+      <div class="search-section">
+        <div class="search-label">Cari berdasarkan <strong>nomor surat, tujuan, atau perihal/urgensi</strong>.</div>
+        <div class="search-row">
+          <input id="searchKeluar" type="text" placeholder="Cari surat keluar..." />
+          <button class="btn btn-outline" type="button" id="btnResetKeluar">↺ Reset</button>
+        </div>
+      </div>
+      <div class="status-alert info">
+        <div class="status-icon">ℹ</div>
+        <div><strong>Surat keluar</strong> yang telah dihubungkan dengan dokumen digital.</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr>
+            <th>No</th>
+            <th>Nomor</th>
+            <th>Tanggal</th>
+            <th>Tujuan</th>
+            <th>Perihal/Urgensi</th>
+            <th>Dokumen</th>
+            <th>QR</th>
+            <th>Edit</th>
+          </tr>
+          </thead>
+          <tbody id="tbodyKeluar"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEUANGAN -->
+    <div id="tab-keuangan" class="tab-content">
+      <div class="search-section">
+        <div class="search-label">Cari berdasarkan <strong>jenis dokumen, kegiatan, periode, atau unit</strong>.</div>
+        <div class="search-row">
+          <input id="searchKeuangan" type="text" placeholder="Cari dokumen keuangan..." />
+          <button class="btn btn-outline" type="button" id="btnResetKeuangan">↺ Reset</button>
+        </div>
+      </div>
+      <div class="status-alert info">
+        <div class="status-icon">ℹ</div>
+        <div>Daftar <strong>dokumen keuangan</strong>.</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr>
+            <th>No</th>
+            <th>Jenis Dokumen</th>
+            <th>Periode</th>
+            <th>Kegiatan / Uraian</th>
+            <th>Unit/PPK</th>
+            <th>Dokumen</th>
+            <th>QR</th>
+            <th>Edit</th>
+          </tr>
+          </thead>
+          <tbody id="tbodyKeuangan"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KEPEGAWAIAN -->
+    <div id="tab-kepegawaian" class="tab-content">
+      <div class="search-section">
+        <div class="search-label">Cari berdasarkan <strong>nama pegawai, jenis dokumen, atau nomor</strong>.</div>
+        <div class="search-row">
+          <input id="searchKepegawaian" type="text" placeholder="Cari dokumen kepegawaian..." />
+          <button class="btn btn-outline" type="button" id="btnResetKepegawaian">↺ Reset</button>
+        </div>
+      </div>
+      <div class="status-alert info">
+        <div class="status-icon">ℹ</div>
+        <div>Daftar <strong>dokumen kepegawaian</strong>.</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama/NIP</th>
+            <th>Jenis Dokumen</th>
+            <th>Nomor/Tanggal</th>
+            <th>Keterangan</th>
+            <th>Dokumen</th>
+            <th>QR</th>
+            <th>Edit</th>
+          </tr>
+          </thead>
+          <tbody id="tbodyKepegawaian"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAMBAH DATA -->
+    <div id="tab-tambah" class="tab-content">
+      <div class="status-alert info">
+        <div class="status-icon">📎</div>
+        <div>
+          Langkah kerja:
+          <ol class="small-text" style="margin:4px 0 0 18px;">
+            <li>Pilih jenis arsip & isi data.</li>
+            <li>Pilih sumber dokumen (link Drive / file komputer).</li>
+            <li>Data tampil di tabel & bisa dibuat QR.</li>
+          </ol>
+        </div>
+      </div>
+
+      <form id="formTambah">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="jenisArsip">Jenis Arsip</label>
+            <select id="jenisArsip" required>
+              <option value="">-- Pilih --</option>
+              <option value="masuk">Surat Masuk</option>
+              <option value="keluar">Surat Keluar</option>
+              <option value="keuangan">Dokumen Keuangan</option>
+              <option value="kepegawaian">Dokumen Kepegawaian</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="tanggal">Tanggal Dokumen</label>
+            <input id="tanggal" type="date" required />
+          </div>
+
+          <div class="form-group">
+            <label for="nomor">Nomor Dokumen / Surat</label>
+            <input id="nomor" type="text" placeholder="Nomor surat / dokumen" />
+          </div>
+
+          <div class="form-group">
+            <label for="pihak">Pengirim / Tujuan / Nama Pegawai</label>
+            <input id="pihak" type="text" placeholder="Pengirim, tujuan, atau nama pegawai" />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="uraian">Perihal / Urgensi / Uraian Singkat</label>
+            <textarea id="uraian" rows="2" placeholder="Perihal, urgensi, atau uraian dokumen"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Sumber Dokumen</label>
+            <label style="font-weight:400;">
+              <input type="radio" name="sumberDoc" value="drive" checked /> Link Google Drive / URL
+            </label>
+            <label style="font-weight:400; margin-top:2px;">
+              <input type="radio" name="sumberDoc" value="file" /> File dari komputer (URL lokal)
+            </label>
+          </div>
+
+          <div class="form-group full-width" id="groupLink">
+            <label for="linkDrive">Link Dokumen (Google Drive / URL)</label>
+            <input id="linkDrive" type="url" placeholder="https://drive.google.com/..." />
+            <div class="helper">Pastikan pengaturan akses link sudah sesuai.</div>
+          </div>
+
+          <div class="form-group full-width" id="groupFile" style="display:none;">
+            <label for="fileDokumen">File Dokumen dari Komputer</label>
+            <input id="fileDokumen" type="file" />
+            <div class="helper">File tidak benar-benar diunggah ke server, hanya URL lokal di browser.</div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="catatan">Catatan (opsional)</label>
+            <textarea id="catatan" rows="2" placeholder="Catatan tambahan"></textarea>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn btn-primary" type="submit" id="btnSimpanData">💾 Simpan ke Tabel</button>
+          <button class="btn btn-outline" type="button" id="btnResetForm">🧹 Bersihkan Form</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- PENGATURAN AKUN -->
+    <div id="tab-akun" class="tab-content">
+      <div class="status-alert info">
+        <div class="status-icon">👤</div>
+        <div>Pengaturan akun & tampilan (hanya tersimpan di browser ini).</div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="akunNama">Nama Akun</label>
+          <input id="akunNama" type="text" placeholder="Nama yang tampil di pojok kanan atas" />
+        </div>
+
+        <div class="form-group">
+          <label for="akunUsername">Username</label>
+          <input id="akunUsername" type="text" placeholder="Username untuk login" />
+        </div>
+
+        <div class="form-group">
+          <label for="akunPassLama">Password Lama</label>
+          <input id="akunPassLama" type="password" placeholder="Masukkan password lama" />
+        </div>
+
+        <div class="form-group">
+          <label for="akunPassBaru">Password Baru</label>
+          <input id="akunPassBaru" type="password" placeholder="Masukkan password baru" />
+        </div>
+
+        <div class="form-group full-width">
+          <label for="akunFoto">Foto Profil</label>
+          <input id="akunFoto" type="file" accept="image/*" />
+          <div class="helper">Foto hanya disimpan di browser ini.</div>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="akunLogo">Logo Instansi</label>
+          <input id="akunLogo" type="file" accept="image/*" />
+          <div class="helper">Logo tampil di samping teks "Sistem Arsip Dokumen".</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <button class="btn btn-primary" type="button" id="btnSimpanAkun">💾 Simpan Pengaturan Akun</button>
+        <div id="akunMsg" class="small-text" style="margin-top:6px;"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>© <span id="yearNow"></span> BRMP Sulawesi Barat</span>
+      <span class="small-text">Sistem arsip sederhana – dapat dikembangkan ke sistem internal.</span>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL QR -->
+<div id="modalBackdrop" class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>QR Dokumen Arsip</h2>
+      <button class="btn-ghost" type="button" id="btnCloseModal">✕</button>
+    </div>
+    <div class="modal-body" style="justify-items:center;">
+      <div id="qrContainer"></div>
+      <div class="small-text">URL:</div>
+      <div class="small-text" id="qrUrlText" style="word-break: break-all;"></div>
+      <div class="small-text">QR ini bisa dicetak & ditempel pada dokumen terkait.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT / DETAIL -->
+<div id="editModalBackdrop" class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Detail / Edit Arsip</h2>
+      <button class="btn-ghost" type="button" id="btnEditClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="small-text">Ringkasan data arsip:</div>
+      <pre id="editDetail" style="white-space:pre-wrap; font-size:0.8rem; background:#f9fafb; padding:8px; border-radius:8px; border:1px solid #e5e7eb; max-height:200px; overflow:auto;"></pre>
+      <div class="small-text">
+        Jika arsip ini salah (nomor, perihal, atau file), gunakan tombol
+        <strong>Hapus Data Ini</strong> di bawah, lalu input ulang data yang benar dari menu Tambah Data.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-small" type="button" id="btnEditDelete">🗑 Hapus Data Ini</button>
+      <button class="btn btn-outline btn-small" type="button" id="btnEditTutup">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // -------- DATA LOGIN & APP --------
+  var USER = {
+    username: "arsiparis",
+    password: "12345",
+    name: "Arsiparis",
+    photo: ""
+  };
+  var APP = {
+    logo: "logo-kementan.png"
+  };
+
+  // -------- GLOBAL UNTUK EDIT/HAPUS --------
+  var currentEditTbodyId = null;
+  var currentEditRowIndex = -1;
+
+  // -------- UTIL TANGGAL --------
+  function formatTanggalIndonesia(tanggalStr) {
+    if (!tanggalStr) return "-";
+    var bulan = [
+      "Januari","Februari","Maret","April","Mei","Juni",
+      "Juli","Agustus","September","Oktober","November","Desember"
+    ];
+    var p = tanggalStr.split("-");
+    if (p.length < 3) return tanggalStr;
+    var t = p[0], b = parseInt(p[1],10), h = parseInt(p[2],10);
+    return h + " " + (bulan[b-1] || "") + " " + t;
+  }
+
+  function periodeDariTanggal(tanggalStr) {
+    if (!tanggalStr) return "-";
+    var bulanNama = [
+      "Januari","Februari","Maret","April","Mei","Juni",
+      "Juli","Agustus","September","Oktober","November","Desember"
+    ];
+    var p = tanggalStr.split("-");
+    if (p.length < 2) return tanggalStr;
+    var t = p[0], b = parseInt(p[1],10);
+    return (bulanNama[b-1] || "") + " " + t;
+  }
+
+  // -------- LOGIN --------
+  function handleLogin() {
+    var u = document.getElementById("loginUsername").value.trim();
+    var p = document.getElementById("loginPassword").value.trim();
+    var err = document.getElementById("loginError");
+    var loginScreen = document.getElementById("login-screen");
+    var mainApp = document.getElementById("main-app");
+
+    if (u === USER.username && p === USER.password) {
+      err.textContent = "";
+      loginScreen.style.display = "none";
+      mainApp.style.display = "flex";
+      refreshProfileUI();
+    } else {
+      err.textContent = "Username atau password salah.";
+    }
+  }
+
+  // -------- PROFIL / AKUN --------
+  function refreshProfileUI() {
+    var profileName = document.getElementById("profileName");
+    var profilePhoto = document.getElementById("profilePhoto");
+    var akunNama = document.getElementById("akunNama");
+    var akunUsername = document.getElementById("akunUsername");
+    var logoImage = document.getElementById("logoImage");
+
+    if (profileName) profileName.textContent = USER.name;
+    if (profilePhoto) {
+      var init = USER.name ? USER.name.charAt(0).toUpperCase() : "A";
+      profilePhoto.src = USER.photo || ("https://via.placeholder.com/40?text=" + encodeURIComponent(init));
+    }
+    if (akunNama) akunNama.value = USER.name;
+    if (akunUsername) akunUsername.value = USER.username;
+    if (logoImage) logoImage.src = APP.logo || "logo-kementan.png";
+  }
+
+  function simpanAkun() {
+    var namaBaru = document.getElementById("akunNama").value.trim();
+    var userBaru = document.getElementById("akunUsername").value.trim();
+    var passLama = document.getElementById("akunPassLama").value;
+    var passBaru = document.getElementById("akunPassBaru").value;
+    var fotoInput = document.getElementById("akunFoto");
+    var logoInput = document.getElementById("akunLogo");
+    var msg = document.getElementById("akunMsg");
+    msg.style.color = "#146c43";
+    msg.textContent = "";
+
+    if (namaBaru) USER.name = namaBaru;
+    if (userBaru) USER.username = userBaru;
+
+    if (passBaru) {
+      if (passLama !== USER.password) {
+        msg.style.color = "#b3261e";
+        msg.textContent = "Password lama salah. Password tidak diubah.";
+      } else {
+        USER.password = passBaru;
+        msg.textContent = "Password berhasil diubah.";
+      }
+    } else {
+      msg.textContent = "Pengaturan akun disimpan.";
+    }
+
+    if (fotoInput && fotoInput.files && fotoInput.files[0]) {
+      var rF = new FileReader();
+      rF.onload = function(ev) {
+        USER.photo = ev.target.result;
+        refreshProfileUI();
+      };
+      rF.readAsDataURL(fotoInput.files[0]);
+    } else {
+      refreshProfileUI();
+    }
+
+    if (logoInput && logoInput.files && logoInput.files[0]) {
+      var rL = new FileReader();
+      rL.onload = function(ev) {
+        APP.logo = ev.target.result;
+        refreshProfileUI();
+      };
+      rL.readAsDataURL(logoInput.files[0]);
+    }
+
+    document.getElementById("akunPassLama").value = "";
+    document.getElementById("akunPassBaru").value = "";
+
+    setTimeout(function(){ msg.textContent = ""; }, 3000);
+  }
+
+  // -------- SUMBER DOKUMEN --------
+  function toggleSumberDokumen() {
+    var radios = document.getElementsByName("sumberDoc");
+    var val = "drive";
+    for (var i=0;i<radios.length;i++) {
+      if (radios[i].checked) { val = radios[i].value; break; }
+    }
+    var gL = document.getElementById("groupLink");
+    var gF = document.getElementById("groupFile");
+    if (val === "file") {
+      gF.style.display = "block";
+      gL.style.display = "none";
+    } else {
+      gF.style.display = "none";
+      gL.style.display = "block";
+    }
+  }
+
+  // -------- BANTU BIKIN CELL --------
+  function createCell(text) {
+    var td = document.createElement("td");
+    td.textContent = text;
+    return td;
+  }
+
+  function buildLinkCell(link) {
+    var td = document.createElement("td");
+    if (link) {
+      var a = document.createElement("a");
+      a.href = link;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = "Buka";
+      td.className = "link-doc";
+      td.appendChild(a);
+    } else {
+      var span = document.createElement("span");
+      span.className = "small-text";
+      span.textContent = "Belum ada link";
+      td.appendChild(span);
+    }
+    return td;
+  }
+
+  // -------- QR BUTTON --------
+  function buildQrButton(link) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn btn-outline btn-small";
+    btn.textContent = "QR";
+    btn.onclick = function() {
+      openQrModal(encodeURIComponent(link || ""));
+    };
+    return btn;
+  }
+
+  // -------- EDIT BUTTON --------
+  function buildEditButton(tbodyId) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn btn-outline btn-small";
+    btn.textContent = "Edit";
+
+    btn.onclick = function() {
+      // cari <tr> dengan naik 2 level (td -> tr)
+      var td = btn.parentNode;
+      var tr = td.parentNode;
+      var tbody = tr.parentNode;
+
+      currentEditTbodyId = tbodyId;
+      // index baris
+      var rows = tbody.rows;
+      for (var i=0;i<rows.length;i++) {
+        if (rows[i] === tr) {
+          currentEditRowIndex = i;
+          break;
+        }
+      }
+
+      var thead = tbody.parentNode.tHead;
+      var cells = tr.cells;
+      var detail = "";
+
+      for (var c=1; c < cells.length-2; c++) {
+        var headerText = thead ? thead.rows[0].cells[c].innerText : ("Kolom " + (c+1));
+        var valueText = cells[c].innerText;
+        detail += headerText + " : " + valueText + "\n";
+      }
+
+      var linkCell = cells[cells.length-3];
+      var a = linkCell.getElementsByTagName("a")[0];
+      var linkText = a ? a.href : "";
+      detail += "\nLink Dokumen : " + (linkText || "-");
+
+      document.getElementById("editDetail").textContent = detail;
+      document.getElementById("editModalBackdrop").classList.add("show");
+    };
+
+    return btn;
+  }
+
+  function closeEditModal() {
+    document.getElementById("editModalBackdrop").classList.remove("show");
+    currentEditTbodyId = null;
+    currentEditRowIndex = -1;
+  }
+
+  function deleteFromEdit() {
+    if (!currentEditTbodyId || currentEditRowIndex < 0) {
+      closeEditModal();
+      return;
+    }
+    if (!confirm("Yakin menghapus data arsip ini dari tabel?")) return;
+
+    var tbody = document.getElementById(currentEditTbodyId);
+    if (!tbody) { closeEditModal(); return; }
+
+    if (currentEditRowIndex >= 0 && currentEditRowIndex < tbody.rows.length) {
+      tbody.deleteRow(currentEditRowIndex);
+      updateRowNumbers(currentEditTbodyId);
+    }
+    closeEditModal();
+  }
+
+  // -------- TAMBAH BARIS TABEL --------
+  function tambahRowSuratMasuk(nomor, tanggal, pihak, uraian, link) {
+    var tbody = document.getElementById("tbodyMasuk");
+    var tr = document.createElement("tr");
+
+    tr.appendChild(createCell(""));
+    var tdNomor = document.createElement("td");
+    tdNomor.innerHTML = "<strong>" + (nomor || "-") + "</strong>";
+    tr.appendChild(tdNomor);
+    tr.appendChild(createCell(formatTanggalIndonesia(tanggal)));
+    tr.appendChild(createCell(pihak || "-"));
+    tr.appendChild(createCell(uraian || "-"));
+    tr.appendChild(buildLinkCell(link));
+
+    var tdQr = document.createElement("td");
+    tdQr.appendChild(buildQrButton(link));
+    tr.appendChild(tdQr);
+
+    var tdEdit = document.createElement("td");
+    tdEdit.appendChild(buildEditButton("tbodyMasuk"));
+    tr.appendChild(tdEdit);
+
+    tbody.appendChild(tr);
+    updateRowNumbers("tbodyMasuk");
+  }
+
+  function tambahRowSuratKeluar(nomor, tanggal, pihak, uraian, link) {
+    var tbody = document.getElementById("tbodyKeluar");
+    var tr = document.createElement("tr");
+
+    tr.appendChild(createCell(""));
+    var tdNomor = document.createElement("td");
+    tdNomor.innerHTML = "<strong>" + (nomor || "-") + "</strong>";
+    tr.appendChild(tdNomor);
+    tr.appendChild(createCell(formatTanggalIndonesia(tanggal)));
+    tr.appendChild(createCell(pihak || "-"));
+    tr.appendChild(createCell(uraian || "-"));
+    tr.appendChild(buildLinkCell(link));
+
+    var tdQr = document.createElement("td");
+    tdQr.appendChild(buildQrButton(link));
+    tr.appendChild(tdQr);
+
+    var tdEdit = document.createElement("td");
+    tdEdit.appendChild(buildEditButton("tbodyKeluar"));
+    tr.appendChild(tdEdit);
+
+    tbody.appendChild(tr);
+    updateRowNumbers("tbodyKeluar");
+  }
+
+  function tambahRowKeuangan(jenisDok, periode, uraian, unit, link) {
+    var tbody = document.getElementById("tbodyKeuangan");
+    var tr = document.createElement("tr");
+
+    tr.appendChild(createCell(""));
+    tr.appendChild(createCell(jenisDok || "-"));
+    tr.appendChild(createCell(periode || "-"));
+    tr.appendChild(createCell(uraian || "-"));
+    tr.appendChild(createCell(unit || "-"));
+    tr.appendChild(buildLinkCell(link));
+
+    var tdQr = document.createElement("td");
+    tdQr.appendChild(buildQrButton(link));
+    tr.appendChild(tdQr);
+
+    var tdEdit = document.createElement("td");
+    tdEdit.appendChild(buildEditButton("tbodyKeuangan"));
+    tr.appendChild(tdEdit);
+
+    tbody.appendChild(tr);
+    updateRowNumbers("tbodyKeuangan");
+  }
+
+  function tambahRowKepegawaian(nama, jenisDok, nomorTanggal, ket, link) {
+    var tbody = document.getElementById("tbodyKepegawaian");
+    var tr = document.createElement("tr");
+
+    tr.appendChild(createCell(""));
+    tr.appendChild(createCell(nama || "-"));
+    tr.appendChild(createCell(jenisDok || "-"));
+    tr.appendChild(createCell(nomorTanggal || "-"));
+    tr.appendChild(createCell(ket || "-"));
+    tr.appendChild(buildLinkCell(link));
+
+    var tdQr = document.createElement("td");
+    tdQr.appendChild(buildQrButton(link));
+    tr.appendChild(tdQr);
+
+    var tdEdit = document.createElement("td");
+    tdEdit.appendChild(buildEditButton("tbodyKepegawaian"));
+    tr.appendChild(tdEdit);
+
+    tbody.appendChild(tr);
+    updateRowNumbers("tbodyKepegawaian");
+  }
+
+  function updateRowNumbers(tbodyId) {
+    var tbody = document.getElementById(tbodyId);
+    var rows = tbody.rows;
+    for (var i=0;i<rows.length;i++) {
+      rows[i].cells[0].textContent = (i+1);
+    }
+  }
+
+  // -------- QR MODAL --------
+  var qrInstance = null;
+
+  function openQrModal(encodedUrl) {
+    var url = decodeURIComponent(encodedUrl || "");
+    var backdrop = document.getElementById("modalBackdrop");
+    var qrContainer = document.getElementById("qrContainer");
+    var urlText = document.getElementById("qrUrlText");
+
+    qrContainer.innerHTML = "";
+    if (qrInstance && qrInstance.clear) qrInstance.clear();
+
+    if (url) {
+      qrInstance = new QRCode(qrContainer, {
+        text: url,
+        width: 220,
+        height: 220
+      });
+    } else {
+      var span = document.createElement("span");
+      span.className = "small-text";
+      span.textContent = "Belum ada link dokumen.";
+      qrContainer.appendChild(span);
+    }
+
+    urlText.textContent = url || "-";
+    backdrop.classList.add("show");
+  }
+
+  function closeQrModal() {
+    document.getElementById("modalBackdrop").classList.remove("show");
+  }
+
+  // -------- FILTER TABEL --------
+  function filterTable(tbodyId, query) {
+    var tbody = document.getElementById(tbodyId);
+    var rows = tbody.rows;
+    var q = (query || "").toLowerCase();
+    for (var i=0;i<rows.length;i++) {
+      var text = rows[i].innerText.toLowerCase();
+      rows[i].style.display = text.indexOf(q) !== -1 ? "" : "none";
+    }
+  }
+
+  function resetFilter(jenis) {
+    if (jenis === "masuk") {
+      document.getElementById("searchMasuk").value = "";
+      filterTable("tbodyMasuk", "");
+    } else if (jenis === "keluar") {
+      document.getElementById("searchKeluar").value = "";
+      filterTable("tbodyKeluar", "");
+    } else if (jenis === "keuangan") {
+      document.getElementById("searchKeuangan").value = "";
+      filterTable("tbodyKeuangan", "");
+    } else if (jenis === "kepegawaian") {
+      document.getElementById("searchKepegawaian").value = "";
+      filterTable("tbodyKepegawaian", "");
+    }
+  }
+
+  // -------- FORM TAMBAH --------
+  function tambahData(event) {
+    event.preventDefault();
+    var jenis = document.getElementById("jenisArsip").value;
+    var tanggal = document.getElementById("tanggal").value;
+    var nomor = document.getElementById("nomor").value.trim();
+    var pihak = document.getElementById("pihak").value.trim();
+    var uraian = document.getElementById("uraian").value.trim();
+
+    if (!jenis || !tanggal) {
+      alert("Jenis arsip dan tanggal wajib diisi.");
+      return;
+    }
+
+    var radios = document.getElementsByName("sumberDoc");
+    var sumber = "drive";
+    for (var i=0;i<radios.length;i++) {
+      if (radios[i].checked) { sumber = radios[i].value; break; }
+    }
+
+    var link = "";
+    if (sumber === "drive") {
+      link = (document.getElementById("linkDrive").value || "").trim();
+      if (!link) {
+        alert("Silakan isi link dokumen (Google Drive / URL).");
+        return;
+      }
+    } else {
+      var fileInput = document.getElementById("fileDokumen");
+      if (!fileInput.files || !fileInput.files[0]) {
+        alert("Silakan pilih file dokumen dari komputer.");
+        return;
+      }
+      link = URL.createObjectURL(fileInput.files[0]);
+    }
+
+    if (jenis === "masuk") {
+      tambahRowSuratMasuk(nomor, tanggal, pihak, uraian, link);
+      alert("Data surat masuk ditambahkan.");
+    } else if (jenis === "keluar") {
+      tambahRowSuratKeluar(nomor, tanggal, pihak, uraian, link);
+      alert("Data surat keluar ditambahkan.");
+    } else if (jenis === "keuangan") {
+      var periode = periodeDariTanggal(tanggal);
+      tambahRowKeuangan(nomor || "Dokumen Keuangan", periode, uraian, pihak, link);
+      alert("Data keuangan ditambahkan.");
+    } else if (jenis === "kepegawaian") {
+      var nomorTanggal = formatTanggalIndonesia(tanggal);
+      tambahRowKepegawaian(pihak, nomor || "Dokumen Kepegawaian", nomorTanggal, uraian, link);
+      alert("Data kepegawaian ditambahkan.");
+    }
+
+    resetForm();
+  }
+
+  function resetForm() {
+    document.getElementById("formTambah").reset();
+    var radios = document.getElementsByName("sumberDoc");
+    for (var i=0;i<radios.length;i++) {
+      radios[i].checked = (radios[i].value === "drive");
+    }
+    toggleSumberDokumen();
+  }
+
+  // -------- INIT --------
+  window.onload = function() {
+    document.getElementById("yearNow").textContent = new Date().getFullYear();
+
+    document.getElementById("btnLogin").onclick = handleLogin;
+
+    var tabButtons = document.getElementsByClassName("tab-btn");
+    var tabContents = document.getElementsByClassName("tab-content");
+    for (var i=0;i<tabButtons.length;i++) {
+      tabButtons[i].onclick = function() {
+        var tabName = this.getAttribute("data-tab");
+        for (var j=0;j<tabButtons.length;j++) tabButtons[j].classList.remove("active");
+        for (var k=0;k<tabContents.length;k++) tabContents[k].classList.remove("active");
+        this.classList.add("active");
+        document.getElementById("tab-" + tabName).classList.add("active");
+      };
+    }
+
+    document.getElementById("searchMasuk").oninput = function(e){ filterTable("tbodyMasuk", e.target.value); };
+    document.getElementById("searchKeluar").oninput = function(e){ filterTable("tbodyKeluar", e.target.value); };
+    document.getElementById("searchKeuangan").oninput = function(e){ filterTable("tbodyKeuangan", e.target.value); };
+    document.getElementById("searchKepegawaian").oninput = function(e){ filterTable("tbodyKepegawaian", e.target.value); };
+
+    document.getElementById("btnResetMasuk").onclick = function(){ resetFilter("masuk"); };
+    document.getElementById("btnResetKeluar").onclick = function(){ resetFilter("keluar"); };
+    document.getElementById("btnResetKeuangan").onclick = function(){ resetFilter("keuangan"); };
+    document.getElementById("btnResetKepegawaian").onclick = function(){ resetFilter("kepegawaian"); };
+
+    var radios = document.getElementsByName("sumberDoc");
+    for (var r=0;r<radios.length;r++) {
+      radios[r].onchange = toggleSumberDokumen;
+    }
+    toggleSumberDokumen();
+
+    document.getElementById("formTambah").onsubmit = tambahData;
+    document.getElementById("btnResetForm").onclick = resetForm;
+
+    document.getElementById("btnSimpanAkun").onclick = simpanAkun;
+
+    document.getElementById("btnCloseModal").onclick = closeQrModal;
+
+    document.getElementById("btnEditClose").onclick = closeEditModal;
+    document.getElementById("btnEditTutup").onclick = closeEditModal;
+    document.getElementById("btnEditDelete").onclick = deleteFromEdit;
+
+    refreshProfileUI();
+  };
+</script>
+</body>
+</html>
